@@ -1,16 +1,65 @@
 import { http, HttpResponse } from 'msw';
+import { randomUUID } from 'crypto';
+import fs from 'fs';
 
 import { events } from '../__mocks__/response/events.json' assert { type: 'json' };
-import { Event } from '../types';
 
 // ! HARD
 // ! 각 응답에 대한 MSW 핸들러를 작성해주세요. GET 요청은 이미 작성되어 있는 events json을 활용해주세요.
 export const handlers = [
-  http.get('/api/events', () => {}),
+  http.get('/api/events', () => {
+    return HttpResponse.json(events);
+  }),
 
-  http.post('/api/events', async ({ request }) => {}),
+  http.post('/api/events', async ({ request }) => {
+    const body = await request.clone().json();
 
-  http.put('/api/events/:id', async ({ params, request }) => {}),
+    const prevEvents = events;
 
-  http.delete('/api/events/:id', ({ params }) => {}),
+    const newEvent = { id: randomUUID(), ...body };
+
+    fs.writeFileSync(
+      `${__dirname}/src/__mocks__/response/events.json`,
+      JSON.stringify({
+        events: [...prevEvents, newEvent],
+      })
+    );
+
+    return HttpResponse.json(newEvent, { status: 201 });
+  }),
+
+  http.put<{ id: string }>('/api/events/:id', async ({ params, request }) => {
+    const { id } = params;
+    const body = await request.clone().json();
+
+    const eventIndex = events.findIndex((event) => event.id === id);
+    if (eventIndex > -1) {
+      const newEvents = [...events];
+      newEvents[eventIndex] = { ...events[eventIndex], ...body };
+
+      fs.writeFileSync(
+        `${__dirname}/src/__mocks__/response/events.json`,
+        JSON.stringify({
+          events: newEvents,
+        })
+      );
+
+      HttpResponse.json(events[eventIndex]);
+    } else {
+      return HttpResponse.json({ message: 'Event not found' }, { status: 404 });
+    }
+  }),
+
+  http.delete<{ id: string }>('/api/events/:id', ({ params }) => {
+    const { id } = params;
+
+    fs.writeFileSync(
+      `${__dirname}/src/__mocks__/response/events.json`,
+      JSON.stringify({
+        events: events.filter((event) => event.id !== id),
+      })
+    );
+
+    HttpResponse.json(null, { status: 204 });
+  }),
 ];
