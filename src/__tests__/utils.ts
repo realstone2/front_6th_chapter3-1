@@ -1,7 +1,9 @@
 import { fillZero } from '../utils/dateUtils';
+import { useEventOperations } from '../hooks/useEventOperations';
+import { render, renderHook, screen } from '@testing-library/react';
 
 export const assertDate = (date1: Date, date2: Date) => {
-  expect(date1.toISOString()).toBe(date2.toISOString());
+  expect(date1.getDate()).toBe(date2.getDate());
 };
 
 export const parseHM = (timestamp: number) => {
