@@ -3,27 +3,24 @@ import { act, renderHook } from '@testing-library/react';
 import dayjs from 'dayjs';
 import { HOLIDAY_RECORD_BY_MONTH } from '../../apis/fetchHolidays.ts';
 import { useCalendarView } from '../../hooks/useCalendarView.ts';
-import { assertDate } from '../utils.ts';
+import { assertDate, setupMockDate } from '../utils.ts';
 
 const TODAY = new Date('2025-10-01');
 const TARGET_DATE = new Date('2025-03-01');
 
-describe('초기 상태', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(TODAY);
-  });
+setupMockDate(TODAY);
 
+describe('초기 상태', () => {
   it('view는 "month"이어야 한다', async () => {
     const { result } = renderHook(() => useCalendarView());
 
     expect(result.current.view).toBe('month');
   });
 
-  it(`currentDate는 오늘 날짜인 ${dayjs(TODAY).format('YYYY-MM-DD')}이어야 한다`, () => {
+  it(`currentDate는 오늘 날짜인 ${dayjs().format('YYYY-MM-DD')}이어야 한다`, () => {
     const { result } = renderHook(() => useCalendarView());
 
-    assertDate(result.current.currentDate, TODAY);
+    assertDate(result.current.currentDate, new Date());
   });
 
   it('holidays는 오늘 날짜에 해당하는 공휴일 정보를 포함하고 있어야 한다', async () => {

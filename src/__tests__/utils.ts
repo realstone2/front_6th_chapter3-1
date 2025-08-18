@@ -12,3 +12,10 @@ export const parseHM = (timestamp: number) => {
   const m = fillZero(date.getMinutes());
   return `${h}:${m}`;
 };
+
+export const setupMockDate = (date: Date) => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(date);
+  });
+};
