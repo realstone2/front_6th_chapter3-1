@@ -1,4 +1,7 @@
+import { randomUUID } from 'crypto';
+import { server } from '../setupTests';
 import { Event } from '../types';
+import { http, HttpResponse } from 'msw';
 
 // ! Hard
 // ! 이벤트는 생성, 수정 되면 fetch를 다시 해 상태를 업데이트 합니다. 이를 위한 제어가 필요할 것 같은데요. 어떻게 작성해야 테스트가 병렬로 돌아도 안정적이게 동작할까요?
@@ -7,4 +10,89 @@ export const setupMockHandlerCreation = (initEvents = [] as Event[]) => {};
 
 export const setupMockHandlerUpdating = () => {};
 
-export const setupMockHandlerDeletion = () => {};
+export const setupMockHandlerDeletionError = () => {
+  afterEach(() => {
+    // This will remove any runtime request handlers
+    // after each test, ensuring isolated network behavior.
+    server.resetHandlers();
+  });
+
+  server.use(
+    http.delete('/api/events/:id', () => {
+      return HttpResponse.json({ message: 'Error' }, { status: 500 });
+    })
+  );
+};
+
+export const setupMockHandlerError = () => {
+  afterEach(() => {
+    // This will remove any runtime request handlers
+    // after each test, ensuring isolated network behavior.
+    server.resetHandlers();
+  });
+
+  server.use(
+    http.get('/api/events', () => {
+      return HttpResponse.json({ message: 'Error' }, { status: 500 });
+    })
+  );
+};
+
+export const setupMockHandlerOverride = (initEvents = [] as Event[]) => {
+  let events = initEvents;
+
+  afterEach(() => {
+    // This will remove any runtime request handlers
+    // after each test, ensuring isolated network behavior.
+    server.resetHandlers();
+  });
+
+  server.use(
+    ...[
+      http.get('/api/events', () => {
+        console.log('get events', HttpResponse.json(events).json());
+        return HttpResponse.json({
+          events,
+        });
+      }),
+
+      http.post('/api/events', async ({ request }) => {
+        const body = await request.clone().json();
+
+        const prevEvents = events;
+
+        const newEvent = { id: randomUUID(), ...body };
+
+        events = [...prevEvents, newEvent];
+
+        return HttpResponse.json(newEvent, { status: 201 });
+      }),
+
+      http.put<{ id: string }>('/api/events/:id', async ({ params, request }) => {
+        const { id } = params;
+        const body = await request.clone().json();
+
+        const eventIndex = events.findIndex((event) => event.id === id);
+
+        if (eventIndex > -1) {
+          const newEvents = [...events];
+          newEvents[eventIndex] = { ...events[eventIndex], ...body };
+
+          events = newEvents;
+
+          return HttpResponse.json(events[eventIndex]);
+        } else {
+          return HttpResponse.json({ message: 'Event not found' }, { status: 404 });
+        }
+      }),
+
+      http.delete<{ id: string }>('/api/events/:id', ({ params }) => {
+        const { id } = params;
+
+        events = events.filter((event) => event.id !== id);
+
+        return HttpResponse.json(null, { status: 204 });
+      }),
+    ]
+  );
+};

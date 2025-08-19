@@ -8,7 +8,9 @@ import { events } from '../__mocks__/response/events.json' assert { type: 'json'
 // ! 각 응답에 대한 MSW 핸들러를 작성해주세요. GET 요청은 이미 작성되어 있는 events json을 활용해주세요.
 export const handlers = [
   http.get('/api/events', () => {
-    return HttpResponse.json(events);
+    return HttpResponse.json({
+      events: events,
+    });
   }),
 
   http.post('/api/events', async ({ request }) => {
@@ -44,7 +46,7 @@ export const handlers = [
         })
       );
 
-      HttpResponse.json(events[eventIndex]);
+      return HttpResponse.json(events[eventIndex]);
     } else {
       return HttpResponse.json({ message: 'Event not found' }, { status: 404 });
     }
@@ -60,6 +62,6 @@ export const handlers = [
       })
     );
 
-    HttpResponse.json(null, { status: 204 });
+    return HttpResponse.json(null, { status: 204 });
   }),
 ];
