@@ -64,7 +64,6 @@ export const overrideMockHandler = (initEvents = [] as Event[]) => {
   server.use(
     ...[
       http.get('/api/events', () => {
-        console.log('get events', HttpResponse.json(events).json());
         return HttpResponse.json({
           events,
         });
