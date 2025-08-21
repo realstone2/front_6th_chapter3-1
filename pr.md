@@ -198,6 +198,17 @@ given, action then 이 모두 같은 테스트 코드이다.
 
 ### 학습 효과 분석
 
+## 테스트 코드 문법 학습
+
+1. queryByText vs findByText vs findByText
+   동기적 쿼리 비동기적 쿼리
+   없는 text 찾을 때는 queryByText
+
+   메서드 동기/비동기 요소 없을 때 사용 시기
+   getByText 동기 에러 지금 당장 있어야 하는 요소
+   queryByText 동기 null 있을 수도, 없을 수도 있는 요소
+   findByText 비동기 에러 나중에 나타날 요소
+
 <!-- 예시
 - 가장 큰 배움이 있었던 부분
 - 추가 학습이 필요한 영역
