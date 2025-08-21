@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react';
-
-import { useSearch } from '../../hooks/useSearch.ts';
-import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
-import { Event, RepeatInfo } from '../../types.ts';
 import { act } from 'react';
+
+import { events } from '../../__mocks__/response/events.json' assert { type: 'json' };
+import { useSearch } from '../../hooks/useSearch.ts';
+import { Event, RepeatInfo } from '../../types.ts';
 import { setupMockDate } from '../utils.ts';
 
 const TODAY = new Date('2025-10-01');

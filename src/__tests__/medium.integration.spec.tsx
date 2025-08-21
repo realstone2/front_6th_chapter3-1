@@ -14,11 +14,11 @@ import { http, HttpResponse } from 'msw';
 import { SnackbarProvider } from 'notistack';
 import { ReactElement } from 'react';
 
+import { overrideMockHandler, setupMockHandlerCreationError } from '../__mocks__/handlersUtils';
 import App from '../App';
+import { useEventOperations } from '../hooks/useEventOperations';
 import { server } from '../setupTests';
 import { Event } from '../types';
-import { useEventOperations } from '../hooks/useEventOperations';
-import { overrideMockHandler, setupMockHandlerCreationError } from '../__mocks__/handlersUtils';
 
 const events = [
   {

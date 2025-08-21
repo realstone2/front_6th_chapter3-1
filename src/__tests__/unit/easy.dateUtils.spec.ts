@@ -1,3 +1,4 @@
+import events from '../../__mocks__/response/events.json';
 import { Event } from '../../types';
 import {
   fillZero,
@@ -10,8 +11,6 @@ import {
   getWeeksAtMonth,
   isDateInRange,
 } from '../../utils/dateUtils';
-
-import events from '../../__mocks__/response/events.json';
 
 describe('getDaysInMonth', () => {
   it('1월은 31일 수를 반환한다', () => {

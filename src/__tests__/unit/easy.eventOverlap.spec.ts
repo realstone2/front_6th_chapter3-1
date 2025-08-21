@@ -1,3 +1,4 @@
+import events from '../../__mocks__/response/events.json';
 import { Event } from '../../types';
 import { getInvalidDate } from '../../utils/dateUtils';
 import {
@@ -6,8 +7,6 @@ import {
   isOverlapping,
   parseDateTime,
 } from '../../utils/eventOverlap';
-
-import events from '../../__mocks__/response/events.json';
 
 describe('parseDateTime', () => {
   it('2025-07-01 14:30을 정확한 Date 객체로 변환한다', () => {
