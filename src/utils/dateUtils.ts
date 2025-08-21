@@ -108,3 +108,7 @@ export function formatDate(currentDate: Date, day?: number) {
     fillZero(day ?? currentDate.getDate()),
   ].join('-');
 }
+
+export function getInvalidDate() {
+  return new Date('');
+}
