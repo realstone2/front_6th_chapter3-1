@@ -25,6 +25,8 @@ it('검색어가 비어있을 때 모든 이벤트를 반환해야 한다', () =
   expect(result.current.filteredEvents).toEqual(eventList);
 });
 
+// it('검색어에 맞는 이벤트만 필터링해야 한다', () => {});
+// 검색어에 맞는 이벤트만 필터링해야 한다와 통합. 같은 분할 그룹의 테스트
 it('검색어가 제목, 설명, 위치 중 하나라도 일치하면 해당 이벤트를 반환해야 한다', () => {
   const eventList = events.map((event) => ({
     ...event,

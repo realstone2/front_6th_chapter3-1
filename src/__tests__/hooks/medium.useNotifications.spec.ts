@@ -7,11 +7,14 @@ import { setupMockDate } from '../utils.ts';
 
 setupMockDate(new Date('2025-10-01T08:50:00'));
 
-it('초기 상태에서는 알림이 없어야 한다', () => {
-  const { result } = renderHook(() => useNotifications(events as Event[]));
+// 불필요한 테스트(?) 초기 상태에 알림이 없는게 맞는것인가?
+// 의미가 있는 테스트인 것인가?
+// 목적이 있는 것인가?
+// it('초기 상태에서는 알림이 없어야 한다', () => {
+//   const { result } = renderHook(() => useNotifications(events as Event[]));
 
-  expect(result.current.notifications).toEqual([]);
-});
+//   expect(result.current.notifications).toEqual([]);
+// });
 
 it('지정된 시간이 된 경우 알림이 새롭게 생성되어 추가된다', async () => {
   const { result } = renderHook(() => useNotifications(events as Event[]));

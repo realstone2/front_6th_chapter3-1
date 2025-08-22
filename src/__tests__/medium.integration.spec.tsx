@@ -195,7 +195,9 @@ describe('일정 뷰', () => {
     await user.click(select);
     await user.click(screen.getByLabelText('week-option'));
 
-    expect(screen.getAllByText('팀 회의')).toHaveLength(2);
+    const weekViewContainer = screen.getByTestId('week-view');
+
+    expect(within(weekViewContainer).getByText('팀 회의')).toBeVisible();
   });
 
   it('월별 뷰에 일정이 없으면, 일정이 표시되지 않아야 한다.', async () => {
@@ -218,7 +220,8 @@ describe('일정 뷰', () => {
     expect(screen.getByText('검색 결과가 없습니다.')).toBeVisible();
   });
 
-  it('월별 뷰에 일정이 정확히 표시되는지 확인한다', async () => {
+  // 월별 뷰에 일정이 정확히 표시되는지 확인한다 => 월별 뷰에 일정이 있으면 일정이 표시된다
+  it('월별 뷰에 일정이 있으면 일정이 표시된다', async () => {
     const user = userEvent.setup();
 
     vi.setSystemTime(new Date('2025-09-12'));
@@ -372,8 +375,6 @@ describe('일정 충돌', () => {
 });
 
 it('notificationTime을 10으로 하면 지정 시간 10분 전 알람 텍스트가 노출된다', async () => {
-  const user = userEvent.setup();
-
   vi.setSystemTime(new Date('2025-09-12T09:50:00'));
 
   overrideMockHandler(events);
